@@ -52,7 +52,6 @@ function main() {
         headers: [["Content-Type", "text/plain"]],
       }));
     }
-    sock.send("ping");
   });
 }
 main();
