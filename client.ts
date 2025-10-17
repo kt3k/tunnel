@@ -44,8 +44,11 @@ function main() {
         body: data.body,
         headers: Object.fromEntries(data.headers),
       });
+
       const respBody = await resp.text();
+
       console.log(data.method, data.pathname, "->", resp.status);
+
       sock.send(
         JSON.stringify({
           id: data.id,
@@ -56,9 +59,9 @@ function main() {
       );
     } catch (e) {
       console.log(data.method, data.pathname, "->", 503);
-      // deno-lint-ignore no-explicit-any
-      const message = `Error: ${(e as any).message}`;
+      const message = `Error: ${e instanceof Error ? e.message : String(e)}`;
       console.log(message);
+
       sock.send(
         JSON.stringify({
           id: data.id,
@@ -70,4 +73,5 @@ function main() {
     }
   });
 }
+
 main();
