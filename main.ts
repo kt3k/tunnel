@@ -10,7 +10,6 @@ export default {
       socket.addEventListener("message", (event) => {
         const data = JSON.parse(event.data);
         const resolve = reqMap.get(data.id);
-        console.log("Received response for request id:", data);
         if (resolve) {
           const response = new Response(data.body, {
             status: data.status,
@@ -27,11 +26,13 @@ export default {
     }
     const url = new URL(req.url);
     if (url.pathname === "/client.ts") {
+      if (sock) {
+        return new Response("console.log('Client already connected');", { status: 400 });
+      }
       return new Response(await Deno.readTextFile("./client.ts"));
     }
     if (sock) {
       console.log("Forwarding request via WebSocket:", req.url);
-      console.log("Request headers:", req.headers, [...req.headers]);
       const { promise, resolve } = Promise.withResolvers<Response>();
       const reqId = crypto.randomUUID();
       reqMap.set(reqId, resolve);
