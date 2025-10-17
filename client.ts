@@ -5,7 +5,7 @@ function main() {
 
   if (!port) {
     console.error(
-      `Usage: deno --allow-net=${url.host} ${url.origin}/client.ts <port>`,
+      `Usage: deno --allow-net=${url.host},localhost ${url.origin}/client.ts <port>`,
     );
     Deno.exit(1);
     return;
