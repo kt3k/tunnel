@@ -9,10 +9,16 @@ function main() {
     return;
   }
 
-  const sock = new WebSocket(`ws://${url.host}`);
+  const sock = new WebSocket(`wss://${url.host}`);
 
   sock.addEventListener("open", () => {
     console.log("WebSocket connection established");
+  });
+  sock.addEventListener("close", () => {
+    console.log("WebSocket connection closed");
+  });
+  sock.addEventListener("error", (event) => {
+    console.error("WebSocket error:", event);
   });
   sock.addEventListener("message", async (event) => {
     console.log("hello")
