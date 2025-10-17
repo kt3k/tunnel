@@ -5,6 +5,11 @@ export default {
     if (req.headers.get("upgrade") === "websocket") {
       const { socket, response } = Deno.upgradeWebSocket(req);
       socket.addEventListener("open", () => {
+        if (sock) {
+          console.log("Closing existing WebSocket connection");
+          sock.close();
+          return;
+        }
         sock = socket;
       });
       socket.addEventListener("message", (event) => {
@@ -26,9 +31,6 @@ export default {
     }
     const url = new URL(req.url);
     if (url.pathname === "/client.ts") {
-      if (sock) {
-        return new Response("console.log('Client already connected');");
-      }
       return new Response(await Deno.readTextFile("./client.ts"));
     }
     if (sock) {

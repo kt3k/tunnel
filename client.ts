@@ -18,6 +18,8 @@ function main() {
   });
   sock.addEventListener("close", () => {
     console.log("WebSocket connection closed");
+    console.log("The server is already connected to another client.");
+    Deno.exit(1);
   });
   sock.addEventListener("error", (event) => {
     console.error("WebSocket error:", event);
