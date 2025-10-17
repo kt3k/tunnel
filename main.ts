@@ -27,7 +27,7 @@ export default {
     const url = new URL(req.url);
     if (url.pathname === "/client.ts") {
       if (sock) {
-        return new Response("console.log('Client already connected');", { status: 400 });
+        return new Response("console.log('Client already connected');");
       }
       return new Response(await Deno.readTextFile("./client.ts"));
     }
