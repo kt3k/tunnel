@@ -31,6 +31,7 @@ export default {
     }
     if (sock) {
       console.log("Forwarding request via WebSocket:", req.url);
+      console.log("Request headers:", req.headers, [...req.headers]);
       const { promise, resolve } = Promise.withResolvers<Response>();
       const reqId = crypto.randomUUID();
       reqMap.set(reqId, resolve);
