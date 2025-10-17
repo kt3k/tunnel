@@ -14,7 +14,8 @@ Run the command:
 deno -N https://your-app-name.deno.net/client.ts 8000
 ```
 
-Then any HTTP request to https://your-app-name.deno.net is forwarded to localhost:8000 on your machine.
+Then any HTTP request to https://your-app-name.deno.net is forwarded to
+localhost:8000 on your machine.
 
 ## License
 
