@@ -45,6 +45,7 @@ function main() {
         headers: [...resp.headers],
       }));
     } catch (e) {
+      console.log("Error occurred:", e);
       sock.send(JSON.stringify({
         id: data.id,
         // deno-lint-ignore no-explicit-any

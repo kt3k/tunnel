@@ -39,7 +39,7 @@ export default {
           pathname: url.pathname,
           method: req.method,
           headers: [...req.headers],
-          body: await req.text(),
+          body: (await req.text()) || null,
         }),
       );
       return promise;
