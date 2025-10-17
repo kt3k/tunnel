@@ -6,6 +6,7 @@ function main() {
   if (!port) {
     console.error(`Usage: deno --allow-net=${url.host} ${url.origin}/client.ts <port>`);
     Deno.exit(1);
+    return;
   }
 
   const sock = new WebSocket(`ws://${url.host}`);
@@ -45,6 +46,7 @@ function main() {
         headers: [["Content-Type", "text/plain"]],
       }));
     }
+    sock.send("ping");
   });
 }
 main();
