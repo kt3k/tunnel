@@ -36,6 +36,7 @@ function main() {
       const resp = await fetch(`http://localhost:${port}${data.pathname}`, {
         method: data.method,
         body: data.body,
+        headers: Object.fromEntries(data.headers),
       });
       const respBody = await resp.text();
       console.log(data.method, data.pathname, "->", resp.status);
