@@ -1,3 +1,12 @@
+interface Message {
+  id: string;
+  pathname: string;
+  method: string;
+  body: string;
+  status: number;
+  headers: [string, string][];
+}
+
 function main() {
   const port = +Deno.args[0];
 
@@ -8,7 +17,6 @@ function main() {
       `Usage: deno --allow-net=${url.host},localhost ${url.origin}/client.ts <port>`,
     );
     Deno.exit(1);
-    return;
   }
 
   const sock = new WebSocket(`wss://${url.host}`);
@@ -16,23 +24,19 @@ function main() {
   sock.addEventListener("open", () => {
     console.log("WebSocket connection established");
   });
+
   sock.addEventListener("close", () => {
     console.log("WebSocket connection closed");
     console.log("The server is already connected to another client.");
     Deno.exit(1);
   });
+
   sock.addEventListener("error", (event) => {
     console.error("WebSocket error:", event);
   });
+
   sock.addEventListener("message", async (event) => {
-    const data = JSON.parse(event.data) as {
-      id: string;
-      pathname: string;
-      method: string;
-      body: string;
-      status: number;
-      headers: [string, string][];
-    };
+    const data = JSON.parse(event.data) as Message;
 
     try {
       const resp = await fetch(`http://localhost:${port}${data.pathname}`, {
@@ -40,26 +44,34 @@ function main() {
         body: data.body,
         headers: Object.fromEntries(data.headers),
       });
+
       const respBody = await resp.text();
+
       console.log(data.method, data.pathname, "->", resp.status);
-      sock.send(JSON.stringify({
-        id: data.id,
-        body: respBody,
-        status: resp.status,
-        headers: [...resp.headers],
-      }));
+
+      sock.send(
+        JSON.stringify({
+          id: data.id,
+          body: respBody,
+          status: resp.status,
+          headers: [...resp.headers],
+        }),
+      );
     } catch (e) {
       console.log(data.method, data.pathname, "->", 503);
-      // deno-lint-ignore no-explicit-any
-      const message = `Error: ${(e as any).message}`;
+      const message = `Error: ${e instanceof Error ? e.message : String(e)}`;
       console.log(message);
-      sock.send(JSON.stringify({
-        id: data.id,
-        body: message,
-        status: 503,
-        headers: [["Content-Type", "text/plain"]],
-      }));
+
+      sock.send(
+        JSON.stringify({
+          id: data.id,
+          body: message,
+          status: 503,
+          headers: [["Content-Type", "text/plain"]],
+        }),
+      );
     }
   });
 }
+
 main();
