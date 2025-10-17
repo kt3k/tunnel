@@ -7,7 +7,7 @@ export default {
       socket.addEventListener("open", () => {
         if (sock) {
           console.log("Closing existing WebSocket connection");
-          sock.close();
+          socket.close();
           return;
         }
         sock = socket;
