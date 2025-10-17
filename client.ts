@@ -31,6 +31,7 @@ function main() {
       status: number;
       headers: [string, string][];
     };
+    console.log("Received request:", data);
 
     try {
       const resp = await fetch(`http://localhost:${port}${data.pathname}`, {
