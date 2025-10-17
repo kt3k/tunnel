@@ -6,6 +6,8 @@ ngrok-like tool written in Deno, deployed to Deno Deploy
 
 Clone this repo and deploy it to Deno Deploy.
 
+[![Deno Deploy](https://deno.com/deploy.svg)](https://console.deno.com/new?clone=https://github.com/kt3k/local-tunnel)
+
 Run the command:
 
 ```
