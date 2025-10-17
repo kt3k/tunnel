@@ -8,7 +8,6 @@ function main() {
       `Usage: deno --allow-net=${url.host},localhost ${url.origin}/client.ts <port>`,
     );
     Deno.exit(1);
-    return;
   }
 
   const sock = new WebSocket(`wss://${url.host}`);
@@ -16,14 +15,17 @@ function main() {
   sock.addEventListener("open", () => {
     console.log("WebSocket connection established");
   });
+
   sock.addEventListener("close", () => {
     console.log("WebSocket connection closed");
     console.log("The server is already connected to another client.");
     Deno.exit(1);
   });
+
   sock.addEventListener("error", (event) => {
     console.error("WebSocket error:", event);
   });
+
   sock.addEventListener("message", async (event) => {
     const data = JSON.parse(event.data) as {
       id: string;
