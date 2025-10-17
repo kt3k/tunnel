@@ -8,6 +8,7 @@ export default {
         sock = socket;
       });
       socket.addEventListener("message", (event) => {
+        console.log("message received", event.data);
         const data = JSON.parse(event.data);
         const resolve = reqMap.get(data.id);
         if (resolve) {
@@ -41,7 +42,7 @@ export default {
           body: await req.text(),
         }),
       );
-      return await promise;
+      return promise;
     } else {
       return new Response("Not Found", { status: 404 });
     }
