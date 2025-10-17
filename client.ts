@@ -21,7 +21,7 @@ function main() {
     console.error("WebSocket error:", event);
   });
   sock.addEventListener("message", async (event) => {
-    console.log("hello")
+    console.log("message received", event.data);
     const data = JSON.parse(event.data) as {
       id: string;
       pathname: string;
@@ -47,7 +47,8 @@ function main() {
     } catch (e) {
       sock.send(JSON.stringify({
         id: data.id,
-        body: ``,
+        // deno-lint-ignore no-explicit-any
+        body: `Error: ${(e as any).message}`,
         status: 503,
         headers: [["Content-Type", "text/plain"]],
       }));
