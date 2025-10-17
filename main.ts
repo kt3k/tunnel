@@ -10,6 +10,7 @@ export default {
       socket.addEventListener("message", (event) => {
         const data = JSON.parse(event.data);
         const resolve = reqMap.get(data.id);
+        console.log("Received response for request id:", data);
         if (resolve) {
           const response = new Response(data.body, {
             status: data.status,
