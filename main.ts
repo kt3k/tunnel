@@ -13,7 +13,7 @@ export default {
         if (resolve) {
           const response = new Response(data.body, {
             status: data.status,
-            headers: data.headers,
+            headers: Object.fromEntries(data.headers),
           });
           resolve(response);
           reqMap.delete(data.id);
