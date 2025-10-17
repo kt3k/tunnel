@@ -4,13 +4,17 @@ function main() {
   const url = new URL(import.meta.url);
 
   if (!port) {
-    console.error(`Usage: deno --allow-net=${url.host} client.ts <port>`);
+    console.error(`Usage: deno --allow-net=${url.host} ${url.origin}/client.ts <port>`);
     Deno.exit(1);
   }
 
   const sock = new WebSocket(`ws://${url.host}`);
 
+  sock.addEventListener("open", () => {
+    console.log("WebSocket connection established");
+  });
   sock.addEventListener("message", async (event) => {
+    console.log("hello")
     const data = JSON.parse(event.data) as {
       id: string;
       pathname: string;
