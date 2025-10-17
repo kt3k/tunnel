@@ -1,3 +1,12 @@
+interface Message {
+  id: string;
+  pathname: string;
+  method: string;
+  body: string;
+  status: number;
+  headers: [string, string][];
+}
+
 function main() {
   const port = +Deno.args[0];
 
@@ -27,14 +36,7 @@ function main() {
   });
 
   sock.addEventListener("message", async (event) => {
-    const data = JSON.parse(event.data) as {
-      id: string;
-      pathname: string;
-      method: string;
-      body: string;
-      status: number;
-      headers: [string, string][];
-    };
+    const data = JSON.parse(event.data) as Message;
 
     try {
       const resp = await fetch(`http://localhost:${port}${data.pathname}`, {
@@ -44,23 +46,27 @@ function main() {
       });
       const respBody = await resp.text();
       console.log(data.method, data.pathname, "->", resp.status);
-      sock.send(JSON.stringify({
-        id: data.id,
-        body: respBody,
-        status: resp.status,
-        headers: [...resp.headers],
-      }));
+      sock.send(
+        JSON.stringify({
+          id: data.id,
+          body: respBody,
+          status: resp.status,
+          headers: [...resp.headers],
+        }),
+      );
     } catch (e) {
       console.log(data.method, data.pathname, "->", 503);
       // deno-lint-ignore no-explicit-any
       const message = `Error: ${(e as any).message}`;
       console.log(message);
-      sock.send(JSON.stringify({
-        id: data.id,
-        body: message,
-        status: 503,
-        headers: [["Content-Type", "text/plain"]],
-      }));
+      sock.send(
+        JSON.stringify({
+          id: data.id,
+          body: message,
+          status: 503,
+          headers: [["Content-Type", "text/plain"]],
+        }),
+      );
     }
   });
 }
