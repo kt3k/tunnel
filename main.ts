@@ -8,7 +8,6 @@ export default {
         sock = socket;
       });
       socket.addEventListener("message", (event) => {
-        console.log("message received", event.data);
         const data = JSON.parse(event.data);
         const resolve = reqMap.get(data.id);
         if (resolve) {
@@ -30,6 +29,7 @@ export default {
       return new Response(await Deno.readTextFile("./client.ts"));
     }
     if (sock) {
+      console.log("Forwarding request via WebSocket:", req.url);
       const { promise, resolve } = Promise.withResolvers<Response>();
       const reqId = crypto.randomUUID();
       reqMap.set(reqId, resolve);
@@ -44,6 +44,7 @@ export default {
       );
       return promise;
     } else {
+      console.log("WebSocket not connected");
       return new Response("Not Found", { status: 404 });
     }
   },

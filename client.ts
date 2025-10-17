@@ -4,7 +4,9 @@ function main() {
   const url = new URL(import.meta.url);
 
   if (!port) {
-    console.error(`Usage: deno --allow-net=${url.host} ${url.origin}/client.ts <port>`);
+    console.error(
+      `Usage: deno --allow-net=${url.host} ${url.origin}/client.ts <port>`,
+    );
     Deno.exit(1);
     return;
   }
@@ -30,7 +32,6 @@ function main() {
       status: number;
       headers: [string, string][];
     };
-    console.log("Received:", data);
 
     try {
       const resp = await fetch(`http://localhost:${port}${data.pathname}`, {
@@ -38,6 +39,7 @@ function main() {
         body: data.body,
       });
       const respBody = await resp.text();
+      console.log(data.method, data.pathname, "->", resp.status);
       sock.send(JSON.stringify({
         id: data.id,
         body: respBody,
@@ -45,11 +47,13 @@ function main() {
         headers: [...resp.headers],
       }));
     } catch (e) {
-      console.log("Error occurred:", e);
+      console.log(data.method, data.pathname, "->", 503);
+      // deno-lint-ignore no-explicit-any
+      const message = `Error: ${(e as any).message}`;
+      console.log(message);
       sock.send(JSON.stringify({
         id: data.id,
-        // deno-lint-ignore no-explicit-any
-        body: `Error: ${(e as any).message}`,
+        body: message,
         status: 503,
         headers: [["Content-Type", "text/plain"]],
       }));
