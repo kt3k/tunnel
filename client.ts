@@ -23,7 +23,6 @@ function main() {
     console.error("WebSocket error:", event);
   });
   sock.addEventListener("message", async (event) => {
-    console.log("message received", event.data);
     const data = JSON.parse(event.data) as {
       id: string;
       pathname: string;
